@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SentinelShield AI - Cloud & AI Threat Detection Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-40 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-600 via-indigo-600 to-emerald-500 p-0.5 shadow-lg shadow-indigo-500/20">
+                <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
+                    <i data-lucide="shield-alert" class="w-5 h-5 text-cyan-400"></i>
+                </div>
+            </div>
+            <div>
+                <div class="flex items-center space-x-2">
+                    <h1 class="text-xl font-bold tracking-tight bg-gradient-to-r from-slate-100 via-cyan-200 to-indigo-300 bg-clip-text text-transparent">
+                        SentinelShield AI
+                    </h1>
+                    <span class="px-2 py-0.5 text-xs font-mono font-medium rounded-full bg-cyan-950/80 text-cyan-400 border border-cyan-800/60">
+                        v1.0.0
+                    </span>
+                </div>
+                <p class="text-xs text-slate-400">Autonomous Cloud Infrastructure & AI Gateway Threat Intelligence Engine</p>
+            </div>
+        </div>
+
+        <!-- System Controls & Badges -->
+        <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700 text-xs">
+                <span class="relative flex h-2.5 w-2.5">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                </span>
+                <span class="font-medium text-slate-300">Live Monitor Active</span>
+            </div>
+
+            <div id="ai-health-badge" class="px-3 py-1.5 rounded-lg bg-emerald-950/60 border border-emerald-800/60 text-emerald-400 text-xs font-medium flex items-center space-x-1.5">
+                <i data-lucide="cpu" class="w-4 h-4"></i>
+                <span>AI Gateway: HEALTHY</span>
+            </div>
+
+            <button onclick="openAttackModal()" class="px-4 py-2 rounded-lg bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white text-xs font-semibold shadow-lg shadow-rose-600/25 flex items-center space-x-2 transition">
+                <i data-lucide="zap" class="w-4 h-4"></i>
+                <span>Inject Cyber Attack</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 p-6 space-y-6 max-w-[1800px] mx-auto w-full">
+
+        <!-- KPI Metrics Strip -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            <!-- Total Logs -->
+            <div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 flex flex-col justify-between">
+                <div class="flex items-center justify-between text-slate-400 text-xs font-medium">
+                    <span>Logs Processed</span>
+                    <i data-lucide="activity" class="w-4 h-4 text-cyan-400"></i>
+                </div>
+                <div class="mt-2 flex items-baseline justify-between">
+                    <span id="metric-total-logs" class="text-2xl font-bold font-mono text-slate-100">0</span>
+                    <span class="text-[11px] text-emerald-400 font-medium">Live Feed</span>
+                </div>
+            </div>
+
+            <!-- Active Threat Alerts -->
+            <div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 flex flex-col justify-between">
+                <div class="flex items-center justify-between text-slate-400 text-xs font-medium">
+                    <span>Active Threats</span>
+                    <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400"></i>
+                </div>
+                <div class="mt-2 flex items-baseline justify-between">
+                    <span id="metric-active-threats" class="text-2xl font-bold font-mono text-amber-400">0</span>
+                    <span id="metric-critical-badge" class="px-2 py-0.5 text-[10px] font-bold rounded bg-rose-950 text-rose-400 border border-rose-800">
+                        0 Critical
+                    </span>
+                </div>
+            </div>
+
+            <!-- Anomaly Index -->
+            <div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 flex flex-col justify-between">
+                <div class="flex items-center justify-between text-slate-400 text-xs font-medium">
+                    <span>Avg Anomaly Index</span>
+                    <i data-lucide="brain-circuit" class="w-4 h-4 text-indigo-400"></i>
+                </div>
+                <div class="mt-2 flex items-baseline justify-between">
+                    <span id="metric-anomaly-index" class="text-2xl font-bold font-mono text-indigo-300">0.0</span>
+                    <span class="text-[11px] text-slate-400 font-mono">/ 100 Risk</span>
+                </div>
+            </div>
+
+            <!-- Monitored Assets -->
+            <div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 flex flex-col justify-between">
+                <div class="flex items-center justify-between text-slate-400 text-xs font-medium">
+                    <span>Cloud & AI Assets</span>
+                    <i data-lucide="cloud" class="w-4 h-4 text-emerald-400"></i>
+                </div>
+                <div class="mt-2 flex items-baseline justify-between">
+                    <span id="metric-assets" class="text-2xl font-bold font-mono text-slate-100">142</span>
+                    <span class="text-[11px] text-slate-400 font-medium">AWS/K8s/AI</span>
+                </div>
+            </div>
+
+            <!-- Remediated Count -->
+            <div class="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 flex flex-col justify-between">
+                <div class="flex items-center justify-between text-slate-400 text-xs font-medium">
+                    <span>Playbooks Mitigated</span>
+                    <i data-lucide="check-circle-2" class="w-4 h-4 text-cyan-400"></i>
+                </div>
+                <div class="mt-2 flex items-baseline justify-between">
+                    <span id="metric-mitigated" class="text-2xl font-bold font-mono text-cyan-400">0</span>
+                    <span class="text-[11px] text-cyan-500/80 font-medium">Automated</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2-Column Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+            <!-- Left Column: Threats & Telemetry (7 Cols) -->
+            <div class="lg:col-span-7 space-y-6">
+
+                <!-- Active Security Threat Alerts Feed -->
+                <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 flex flex-col">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-2">
+                            <i data-lucide="flame" class="w-5 h-5 text-rose-500"></i>
+                            <h2 class="font-semibold text-slate-100 text-sm">Real-Time Threat Detection Feed</h2>
+                        </div>
+                        <div class="flex space-x-2 text-xs">
+                            <button onclick="filterAlerts('ALL')" class="px-2.5 py-1 rounded bg-slate-800 text-slate-300 font-medium hover:bg-slate-700">All</button>
+                            <button onclick="filterAlerts('CRITICAL')" class="px-2.5 py-1 rounded bg-rose-950/80 text-rose-400 font-medium border border-rose-800/60 hover:bg-rose-900">Critical</button>
+                            <button onclick="filterAlerts('HIGH')" class="px-2.5 py-1 rounded bg-amber-950/80 text-amber-400 font-medium border border-amber-800/60 hover:bg-amber-900">High</button>
+                        </div>
+                    </div>
+
+                    <!-- Alerts Container -->
+                    <div id="alerts-container" class="space-y-3 max-h-[420px] overflow-y-auto pr-1">
+                        <!-- Alert Card JS Template -->
+                        <div class="p-4 rounded-xl bg-slate-950/60 border border-slate-800 text-slate-400 text-xs text-center">
+                            Loading security alerts...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Log Telemetry Stream Table -->
+                <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 flex flex-col">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-2">
+                            <i data-lucide="terminal" class="w-5 h-5 text-cyan-400"></i>
+                            <h2 class="font-semibold text-slate-100 text-sm">Unified Telemetry Event Log Stream</h2>
+                        </div>
+                        <span class="text-xs text-slate-400 font-mono">AWS | AZURE | K8S | AI_GATEWAY</span>
+                    </div>
+
+                    <div class="overflow-x-auto rounded-xl border border-slate-800/80 bg-slate-950/80">
+                        <table class="w-full text-left text-xs font-mono">
+                            <thead class="bg-slate-900/90 text-slate-400 border-b border-slate-800">
+                                <tr>
+                                    <th class="p-3">Timestamp</th>
+                                    <th class="p-3">Provider</th>
+                                    <th class="p-3">Identity / Service</th>
+                                    <th class="p-3">Action</th>
+                                    <th class="p-3">Geo / IP</th>
+                                    <th class="p-3 text-right">Anomaly Score</th>
+                                </tr>
+                            </thead>
+                            <tbody id="logs-table-body" class="divide-y divide-slate-800/60 text-slate-300">
+                                <tr>
+                                    <td colspan="6" class="p-4 text-center text-slate-500">Connecting to event stream...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Analytics & Controls (5 Cols) -->
+            <div class="lg:col-span-5 space-y-6">
+
+                <!-- Attack Category Breakdown Chart -->
+                <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-2">
+                            <i data-lucide="pie-chart" class="w-5 h-5 text-indigo-400"></i>
+                            <h2 class="font-semibold text-slate-100 text-sm">Threat Attack Vectors Distribution</h2>
+                        </div>
+                    </div>
+                    <div class="h-56 relative flex items-center justify-center">
+                        <canvas id="threat-chart"></canvas>
+                    </div>
+                </div>
+
+                <!-- MITRE ATT&CK Tactics Matrix -->
+                <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-2">
+                            <i data-lucide="grid" class="w-5 h-5 text-emerald-400"></i>
+                            <h2 class="font-semibold text-slate-100 text-sm">MITRE ATT&CK Matrix Coverage</h2>
+                        </div>
+                        <span class="text-xs text-slate-400">Cloud & LLM Tactics</span>
+                    </div>
+
+                    <div id="mitre-grid" class="grid grid-cols-2 gap-2.5">
+                        <!-- MITRE Cards JS -->
+                    </div>
+                </div>
+
+                <!-- Attack Simulator Launcher Card -->
+                <div class="bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-5 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <i data-lucide="crosshair" class="w-5 h-5 text-rose-400"></i>
+                            <h2 class="font-semibold text-slate-100 text-sm">Targeted Attack Scenario Injector</h2>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-400">Simulate complex multi-stage cloud & AI threat vectors to test automated detection rules and ML models:</p>
+
+                    <div class="grid grid-cols-1 gap-2 pt-1">
+                        <button onclick="injectAttack('iam_privilege_escalation')" class="p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-left text-xs flex items-center justify-between transition group">
+                            <div>
+                                <span class="font-semibold text-slate-200 group-hover:text-amber-300">AWS IAM Admin Privilege Escalation</span>
+                                <p class="text-[11px] text-slate-400">Attach AdministratorAccess from Russian IP</p>
+                            </div>
+                            <i data-lucide="shield-alert" class="w-4 h-4 text-amber-400"></i>
+                        </button>
+
+                        <button onclick="injectAttack('prompt_injection')" class="p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-left text-xs flex items-center justify-between transition group">
+                            <div>
+                                <span class="font-semibold text-slate-200 group-hover:text-rose-300">AI Prompt Injection & Data Jailbreak</span>
+                                <p class="text-[11px] text-slate-400">System override prompt to dump credentials</p>
+                            </div>
+                            <i data-lucide="cpu" class="w-4 h-4 text-rose-400"></i>
+                        </button>
+
+                        <button onclick="injectAttack('k8s_escape')" class="p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-left text-xs flex items-center justify-between transition group">
+                            <div>
+                                <span class="font-semibold text-slate-200 group-hover:text-cyan-300">Kubernetes Privileged Container Escape</span>
+                                <p class="text-[11px] text-slate-400">HostPath mount '/' privileged Pod creation</p>
+                            </div>
+                            <i data-lucide="box" class="w-4 h-4 text-cyan-400"></i>
+                        </button>
+
+                        <button onclick="injectAttack('data_exfiltration')" class="p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-left text-xs flex items-center justify-between transition group">
+                            <div>
+                                <span class="font-semibold text-slate-200 group-hover:text-indigo-300">AWS S3 Mass Storage Data Exfiltration</span>
+                                <p class="text-[11px] text-slate-400">450 MB payload download from Beijing IP</p>
+                            </div>
+                            <i data-lucide="download-cloud" class="w-4 h-4 text-indigo-400"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Alert Investigation Drawer / Modal -->
+    <div id="investigate-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/60">
+                <div class="flex items-center space-x-3">
+                    <span id="modal-severity-badge" class="px-2.5 py-1 text-xs font-bold rounded bg-rose-950 text-rose-400 border border-rose-800">
+                        CRITICAL
+                    </span>
+                    <div>
+                        <h3 id="modal-title" class="font-bold text-slate-100 text-base">Alert Title</h3>
+                        <p id="modal-subtitle" class="text-xs text-slate-400 font-mono">ID: ALT-0000 | Provider: AWS</p>
+                    </div>
+                </div>
+                <button onclick="closeModal()" class="p-1 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Modal Content Body -->
+            <div class="p-6 overflow-y-auto space-y-6 flex-1 text-xs text-slate-300">
+                <!-- AI Security Analyst Synthesis Box -->
+                <div class="p-4 rounded-xl bg-gradient-to-r from-indigo-950/60 via-slate-900 to-cyan-950/60 border border-indigo-800/60 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2 text-indigo-300 font-semibold text-sm">
+                            <i data-lucide="sparkles" class="w-4 h-4 text-cyan-400"></i>
+                            <span>AI Security Analyst Root-Cause Synthesis</span>
+                        </div>
+                        <span id="modal-confidence" class="px-2 py-0.5 rounded bg-indigo-900/80 text-indigo-300 font-mono text-[11px]">
+                            Confidence: 99.4%
+                        </span>
+                    </div>
+                    <p id="modal-ai-summary" class="text-slate-200 leading-relaxed">
+                        Loading AI incident analysis...
+                    </p>
+                    <div class="grid grid-cols-2 gap-3 pt-2 text-slate-300">
+                        <div class="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800">
+                            <span class="text-[10px] text-slate-400 font-medium block uppercase">Identified Root Cause</span>
+                            <span id="modal-root-cause" class="font-semibold text-slate-200">Exposed API Key</span>
+                        </div>
+                        <div class="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800">
+                            <span class="text-[10px] text-slate-400 font-medium block uppercase">Potential Impact</span>
+                            <span id="modal-impact" class="font-semibold text-amber-300">Full Cloud Account Takeover</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MITRE ATT&CK Mapping -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800 space-y-1">
+                        <span class="text-slate-400 text-[10px] uppercase tracking-wider block">MITRE ATT&CK Tactic</span>
+                        <span id="modal-mitre-tactic" class="font-mono text-cyan-400 font-semibold">TA0004 - Privilege Escalation</span>
+                    </div>
+                    <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800 space-y-1">
+                        <span class="text-slate-400 text-[10px] uppercase tracking-wider block">MITRE ATT&CK Technique</span>
+                        <span id="modal-mitre-technique" class="font-mono text-indigo-400 font-semibold">T1098 - Account Manipulation</span>
+                    </div>
+                </div>
+
+                <!-- Automated Mitigation Playbook -->
+                <div class="space-y-2">
+                    <h4 class="font-semibold text-slate-200 text-xs flex items-center space-x-1.5">
+                        <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+                        <span>Automated Security Remediation Playbook (CLI)</span>
+                    </h4>
+                    <div id="modal-playbook" class="space-y-1 font-mono text-[11px] bg-slate-950 p-3 rounded-xl border border-slate-800 text-emerald-400 overflow-x-auto">
+                        <!-- Playbook commands -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer Actions -->
+            <div class="px-6 py-4 border-t border-slate-800 bg-slate-950/80 flex items-center justify-between">
+                <button onclick="dismissAlertModal()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition">
+                    Dismiss Alert
+                </button>
+                <button id="modal-mitigate-btn" onclick="executeMitigation()" class="px-5 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-lg shadow-emerald-600/30 flex items-center space-x-2 transition">
+                    <i data-lucide="play" class="w-4 h-4"></i>
+                    <span>Execute 1-Click Mitigation</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application JavaScript -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
