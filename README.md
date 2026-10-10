@@ -1,4 +1,4 @@
-# 🛡️ SentinelShield AI: Cloud & AI Threat Detection & Monitoring System
+# 🛡️ Addinik AI: Cloud & AI Threat Detection & Monitoring System
 
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
 ![Python](https://img.shields.io/badge/Python-3.12-blue.svg)
@@ -6,7 +6,7 @@
 ![ML](https://img.shields.io/badge/ML-IsolationForest-indigo.svg)
 ![MITRE ATT&CK](https://img.shields.io/badge/MITRE-v14.1-orange.svg)
 
-**SentinelShield AI** is an enterprise-grade, real-time threat detection, security telemetry monitoring, and automated incident response platform built for multi-cloud environments (AWS, Azure, GCP, Kubernetes) and AI LLM Gateway services.
+**Addinik AI** is an enterprise-grade, real-time threat detection, security telemetry monitoring, and automated incident response platform built for multi-cloud environments (AWS, Azure, GCP, Kubernetes) and AI LLM Gateway services.
 
 ---
 

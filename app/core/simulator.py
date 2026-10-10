@@ -55,7 +55,7 @@ class TelemetrySimulator:
             resource="resource-id-" + str(random.randint(100, 999)),
             ip_address=ips,
             geo_location=random.choice(geos),
-            user_agent="SentinelAgent/1.0",
+            user_agent="AddinikAgent/1.0",
             bytes_transferred=random.randint(500, 45000),
             token_count=random.randint(100, 1500) if chosen_provider == CloudProvider.AI_GATEWAY else 0,
             payload={"status": "200_OK"}

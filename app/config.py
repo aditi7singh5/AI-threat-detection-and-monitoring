@@ -1,7 +1,7 @@
 import os
 
 class Settings:
-    PROJECT_NAME: str = "SentinelShield AI - Cloud & AI Threat Detection Engine"
+    PROJECT_NAME: str = "Addinik AI - Cloud & AI Threat Detection Engine"
     VERSION: str = "1.0.0"
     API_V1_STR: str = "/api"
     

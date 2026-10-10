@@ -3,10 +3,10 @@ version: '3.8'
 services:
   threat-monitor:
     build: .
-    container_name: sentinel_shield_app
+    container_name: addinik_ai_app
     ports:
       - "8000:8000"
     environment:
-      - PROJECT_NAME=SentinelShield AI
+      - PROJECT_NAME=Addinik AI
       - ANOMALY_SCORE_THRESHOLD=72.0
     restart: unless-stopped
